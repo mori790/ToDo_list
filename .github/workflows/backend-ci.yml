@@ -27,7 +27,7 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install fastapi uvicorn pydantic pytest ruff mypy
+          pip install fastapi uvicorn pydantic pytest ruff mypy httpx
 
       - name: Lint
         run: ruff check .
