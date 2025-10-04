@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import TaskList from "./components/TaskList";
 import TaskForm from "./components/TaskForm";
-import { listTasks, createTask, type Task } from "./lib/api";
+import { listTasks, createTask, updateTask, deleteTask, type Task } from "./lib/api";
+import styles from "./page.module.css";
 
 export default function Page() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -15,23 +16,57 @@ export default function Page() {
       try {
         setTasks(await listTasks());
       } catch {
-        setError("failed to fetch");
+        setError("Failed to fetch tasks");
       } finally {
         setLoading(false);
       }
     })();
-  },[]);
+  }, []);
+
+  const handleUpdate = async (id: string, content: string) => {
+    const updated = await updateTask(id, content);
+    setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteTask(id);
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+  };
 
   return (
-    <main style={{ maxWidth: 640, margin: "2rem auto", padding: "0 1rem" }}>
-      <h1>Memo</h1>
+    <main className={styles.main}>
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>📋 My Memo App</h1>
+          <p className={styles.subtitle}>Keep track of your thoughts and tasks</p>
+        </header>
 
-      <TaskForm
-        create={createTask}
-        onCreated={(t) => setTasks((prev) => [t, ...prev])}
-      />
+        <section className={styles.formSection}>
+          <TaskForm create={createTask} onCreated={(t) => setTasks((prev) => [t, ...prev])} />
+        </section>
 
-      {loading ? <p>Loading...</p> : error ? <p role="alert">{error}</p> : <TaskList tasks={tasks} />}
+        <section className={styles.listSection}>
+          {loading ? (
+            <div className={styles.loading}>
+              <div className={styles.spinner}></div>
+              <p>Loading tasks...</p>
+            </div>
+          ) : error ? (
+            <div className={styles.error}>
+              <p role="alert">⚠️ {error}</p>
+            </div>
+          ) : (
+            <>
+              <div className={styles.statsBar}>
+                <span className={styles.taskCount}>
+                  {tasks.length} {tasks.length === 1 ? "task" : "tasks"}
+                </span>
+              </div>
+              <TaskList tasks={tasks} onUpdate={handleUpdate} onDelete={handleDelete} />
+            </>
+          )}
+        </section>
+      </div>
     </main>
   );
 }

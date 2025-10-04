@@ -22,3 +22,20 @@ export async function createTask(content: string): Promise<Task> {
     if (!r.ok) throw new Error("failed to create");
     return r.json();
 }
+
+export async function updateTask(id: string, content: string): Promise<Task> {
+    const r = await fetch(`${BASE}/tasks/${id}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ content }),
+    });
+    if (!r.ok) throw new Error("failed to update");
+    return r.json();
+}
+
+export async function deleteTask(id: string): Promise<void> {
+    const r = await fetch(`${BASE}/tasks/${id}`, {
+        method: "DELETE",
+    });
+    if (!r.ok) throw new Error("failed to delete");
+}

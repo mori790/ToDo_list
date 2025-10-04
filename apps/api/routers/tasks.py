@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Callable, List
 from apps.api.schemas.task import TaskCreate, TaskOut
 from apps.api.domain.models import Task
@@ -21,5 +21,22 @@ def make_tasks_router(repo_dep: Callable[[], TaskRepository]) -> APIRouter:
     @r.get("/tasks", response_model=List[TaskOut])
     def list_tasks(repo: TaskRepository = Depends(repo_dep)):
         return [to_out(t) for t in repo.list_latest()]
-    
+
+    @r.patch("/tasks/{task_id}", response_model=TaskOut)
+    def update_task(task_id: str, payload: TaskCreate, repo: TaskRepository = Depends(repo_dep)):
+        task = repo.get(task_id)
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+        task.update_content(payload.content)
+        return to_out(repo.update(task))
+
+    @r.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+    def delete_task(task_id: str, repo: TaskRepository = Depends(repo_dep)):
+        task = repo.get(task_id)
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+        repo.delete(task_id)
+        return None
+
     return r
+

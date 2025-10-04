@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Task } from "../lib/api";
+import styles from "./TaskForm.module.css";
 
 export default function TaskForm({
     onCreated,
@@ -15,7 +16,8 @@ export default function TaskForm({
     const [loading, setLoading] = useState(false);
 
     return (
-        <form 
+        <form
+            className={styles.form}
             onSubmit={async (e) => {
                 e.preventDefault();
                 setErr(null);
@@ -26,21 +28,29 @@ export default function TaskForm({
                     onCreated(t);
                     setValue("");
                 } catch {
-                    setErr("failed to create");
+                    setErr("Failed to create task");
                 } finally {
                     setLoading(false);
                 }
             }}
         >
-            <input 
-                placeholder="Write a memo"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
-            <button type="submit" disabled={loading}>
-                {loading ? "Adding..." : "Add"}
-            </button>
-            {err && <p role="alert">{err}</p>}
+            <div className={styles.inputWrapper}>
+                <input
+                    className={styles.input}
+                    placeholder="✍️ Write a new memo..."
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    disabled={loading}
+                />
+                <button
+                    className={styles.submitButton}
+                    type="submit"
+                    disabled={loading || !value.trim()}
+                >
+                    {loading ? "Adding..." : "Add Task"}
+                </button>
+            </div>
+            {err && <p className={styles.error} role="alert">{err}</p>}
         </form>
     );
 }
