@@ -2,7 +2,7 @@ name: CD (Cloud Run / FastAPI)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.AR_REPOSITORY }}/${{ vars.CR_SERVICE }}
@@ -39,4 +39,7 @@ jobs:
           allow_unauthenticated: true
 
       - name: Show URL
-        run: echo "Cloud Run URL: ${{ steps.deploy.outputs.url }}"
+        env:
+          CR_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          echo "Cloud Run URL: ${CR_URL}"
