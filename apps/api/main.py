@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 from apps.api.routers.tasks import make_tasks_router
 from apps.api.domain.repositories import InMemoryTaskRepo
 
@@ -7,10 +7,10 @@ def create_app(testing: bool = False) -> FastAPI:
     app = FastAPI(title="Memo API")
     
     # ★ ここを追加：フロントのオリジンを列挙（credentialsを使う予定がなくてもOK）
-    origins = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ]
+    # origins = [
+    #     "http://localhost:3000",
+    #     "http://127.0.0.1:3000",
+    # ]
     # allowed = ["https://<your-project>.vercel.app"]
     # app.add_middleware(
     #     CORSMiddleware,
