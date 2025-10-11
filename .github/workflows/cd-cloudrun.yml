@@ -19,13 +19,15 @@ jobs:
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true   
+          export_default_credentials: true
 
       - name: Docker auth for Artifact Registry
         run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
 
       - name: Build & Push image (apps/api/Dockerfile)
+        shell: bash
         run: |
+          set -euo pipefail
           docker build -f apps/api/Dockerfile -t "${IMAGE}:${GITHUB_SHA}" -t "${IMAGE}:latest" .
           docker push "${IMAGE}:${GITHUB_SHA}"
           docker push "${IMAGE}:latest"
@@ -36,8 +38,10 @@ jobs:
         with:
           service: ${{ vars.CR_SERVICE }}
           region: ${{ vars.GCP_REGION }}
-          image: "${{ env.IMAGE }}:${{ github.sha }}" 
+          image: "${{ env.IMAGE }}:${{ github.sha }}"
           allow_unauthenticated: true
 
       - name: Show URL
-        run: echo "Cloud Run URL: ${{ steps.deploy.outputs.url }}"
+        shell: bash
+        run: |
+          echo "Cloud Run URL: ${{ steps.deploy.outputs.url }}"
