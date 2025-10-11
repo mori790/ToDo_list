@@ -36,7 +36,7 @@ jobs:
         with:
           service: ${{ vars.CR_SERVICE }}
           region: ${{ vars.GCP_REGION }}
-          image: ${{ env.IMAGE }}:${{ github.sha }}   
+          image: "${{ env.IMAGE }}:${{ github.sha }}" 
           allow_unauthenticated: true
 
       - name: Show URL
