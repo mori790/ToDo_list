@@ -11,6 +11,7 @@ def create_app(testing: bool = False) -> FastAPI:
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
+    allowed = ["https://<your-project>.vercel.app"]
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,        # credentials=True の場合、ワイルドカードは不可
@@ -27,4 +28,4 @@ def create_app(testing: bool = False) -> FastAPI:
     
     # できたルータを登録
     app.include_router(make_tasks_router(repo_dep))
-    return app 
+    return app
