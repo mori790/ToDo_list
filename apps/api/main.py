@@ -20,7 +20,7 @@ def create_app(testing: bool = False) -> FastAPI:
     #     allow_headers=["*"],          # "Content-Type","Authorization" など
     # )
     
-    # 常にインメモリ。DB実装ま
+    # 常にインメモリ。DB実装まで
     repo = InMemoryTaskRepo()
     
     def repo_dep():
