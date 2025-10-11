@@ -11,14 +11,14 @@ def create_app(testing: bool = False) -> FastAPI:
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
-    allowed = ["https://<your-project>.vercel.app"]
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,        # credentials=True の場合、ワイルドカードは不可
-        allow_credentials=True,       # Cookie/認証を使わないなら False でも可
-        allow_methods=["*"],          # 必要に応じて ["GET","POST","PATCH","DELETE","OPTIONS"]
-        allow_headers=["*"],          # "Content-Type","Authorization" など
-    )
+    # allowed = ["https://<your-project>.vercel.app"]
+    # app.add_middleware(
+    #     CORSMiddleware,
+    #     allow_origins=origins,        # credentials=True の場合、ワイルドカードは不可
+    #     allow_credentials=True,       # Cookie/認証を使わないなら False でも可
+    #     allow_methods=["*"],          # 必要に応じて ["GET","POST","PATCH","DELETE","OPTIONS"]
+    #     allow_headers=["*"],          # "Content-Type","Authorization" など
+    # )
     
     # 常にインメモリ。DB実装まで
     repo = InMemoryTaskRepo()
